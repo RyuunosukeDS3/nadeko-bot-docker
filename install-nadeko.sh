@@ -1,13 +1,11 @@
 #!/bin/sh
 
-git clone -b v5 --recursive --depth 1 https://gitlab.com/kwoth/nadekobot
-
 root=$(pwd)
 
+mkdir nadekobot
 cd nadekobot
-
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-dotnet publish -r $(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g') -c Release -o output/ src/NadekoBot/NadekoBot.csproj 
+wget https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/5.1.14/5.1.14-linux-arm64-build.tar
+tar –xvz 5.1.14-linux-arm64-build.tar
 
 cd "$root"
 
