@@ -43,11 +43,11 @@ jobs:
           script: |
             const { version } = process.env;
             const { owner, repo } = context.repo;
-            await github.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
               owner: owner,
               repo: repo,
               workflow_id: 'publish-to-dockerhub.yml',  // The name of the second workflow file
-              ref: 'main',  // Branch to run the workflow on
+              ref: 'v5',  // Branch to run the workflow on
               inputs: {
                 logLevel: 'run',
                 version: version
