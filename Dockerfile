@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM}
-RUN TARGETPLATFORM_MODIFIED=$(echo ${TARGETPLATFORM} | sed 's/\//-/g' | sed 's/amd64/x64/')
+RUN TARGETPLATFORM=$(echo ${TARGETPLATFORM} | sed 's/\//-/g' | sed 's/amd64/x64/')
 
 COPY . .
 
