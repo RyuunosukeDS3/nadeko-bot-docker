@@ -16,7 +16,7 @@ apt-get install git tmux -y
 
 echo "Installing music prerequisites..."
 apt-get install libopus0 opus-tools libopus-dev libsodium-dev python3 ffmpeg -y
-wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dl
+wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
 chmod a+rx /usr/local/bin/yt-dlp
 
 echo "NadekoBot Prerequisites Installation completed..."
