@@ -1,7 +1,8 @@
 FROM ubuntu:22.04
 
-RUN VER=$(cat /etc/debian_version)
-RUN SVER=$( grep -oP "[0-9]+" /etc/debian_version | head -1 )
+ARG TARGETPLATFORM
+ENV TARGETPLATFORM=${TARGETPLATFORM}
+RUN TARGETPLATFORM_MODIFIED=$(echo ${TARGETPLATFORM} | sed 's/\//-/g' | sed 's/amd64/x64/')
 
 COPY . .
 
