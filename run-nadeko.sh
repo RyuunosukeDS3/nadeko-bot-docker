@@ -2,7 +2,7 @@
 
 root=$(pwd)
 
-cd "$root/nadekobot/output"
+cd "$root/nadekobot"
 echo "Running NadekoBot. Please wait."
 dotnet NadekoBot.dll
 
