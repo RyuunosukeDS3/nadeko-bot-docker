@@ -41,6 +41,6 @@ jobs:
         run: |
           curl -X POST https://api.github.com/repos/RyuunosukeDS3/nadeko-bot-docker/actions/workflows/publish-to-dockerhub.yml/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.GITHUB_TOKEN }} \
+          -u ${{ secrets.GH_TOKEN }} \
           -d '{"ref":"main", "inputs": {"logLevel": "run", "version": "${{ env.version }}"}}'
 
