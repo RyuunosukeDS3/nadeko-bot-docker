@@ -43,5 +43,5 @@ jobs:
             -X POST \
             -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/RyuunosukeDS3/nadeko-bot-docker/actions/workflows/publish-to-dockerhub.yml/dispatches \
+            https://api.github.com/repos/RyuunosukeDS3/nadeko-bot-docker/actions/workflows/122799033/dispatches \
             -d '{"ref":"main", "inputs": {"logLevel": "run", "version": "${{ env.version }}"}}'
