@@ -38,9 +38,23 @@ jobs:
 
       - name: Trigger Docker Build Workflow
         if: env.new_version == 'true'
-        run: |
-          curl -X POST https://api.github.com/repos/RyuunosukeDS3/nadeko-bot-docker/actions/workflows/publish-to-dockerhub.yml/dispatches \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.GH_TOKEN }} \
-          -d '{"ref":"main", "inputs": {"logLevel": "run", "version": "${{ env.version }}"}}'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const version = process.env.version; // Getting the version from the environment variable
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: owner,
+              repo: repo,
+              workflow_id: 'publish-to-dockerhub.yml',  // The name of the second workflow file
+              ref: 'main',  // Branch to run the workflow on
+              inputs: {
+                logLevel: 'run',
+                version: version
+              }
+            });
+            console.log(`Workflow dispatched: ${response.status}`);
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use your secret token
+
 
