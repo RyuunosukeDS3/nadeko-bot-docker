@@ -8,7 +8,7 @@ cd nadekobot
 
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 dotnet restore -f --no-cache
-dotnet build src/NadekoBot/NadekoBot.csproj -c Release -o output/
+dotnet publish -r ${TARGETPLATFORM} -c Release -o output/ src/NadekoBot/NadekoBot.csproj 
 
 cd "$root"
 
