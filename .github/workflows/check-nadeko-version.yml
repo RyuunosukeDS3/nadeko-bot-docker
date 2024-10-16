@@ -38,20 +38,9 @@ jobs:
 
       - name: Trigger Docker Build Workflow
         if: env.new_version == 'true'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { version } = process.env;
-            const { owner, repo } = context.repo;
-            await github.rest.actions.createWorkflowDispatch({
-              owner: owner,
-              repo: repo,
-              workflow_id: 'publish-to-dockerhub.yml',  // The name of the second workflow file
-              ref: 'v5',  // Branch to run the workflow on
-              inputs: {
-                logLevel: 'run',
-                version: version
-              }
-            });
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST https://api.github.com/repos/RyuunosukeDS3/nadeko-bot-docker/actions/workflows/publish-to-dockerhub.yml/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.GITHUB_TOKEN }} \
+          -d '{"ref":"main", "inputs": {"logLevel": "run", "version": "${{ env.version }}"}}'
+
