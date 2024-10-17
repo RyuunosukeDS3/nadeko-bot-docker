@@ -47,23 +47,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Linux Dockerfile
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile.linux  # Specify the Linux Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ${{ env.REPO_NAME }}:${{ github.event.inputs.version }}
-            ${{ github.event.inputs.latest && format('{0}:latest', env.REPO_NAME) }}
-
       - name: Build and push Windows Dockerfile
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile.windows  # Specify the Windows Dockerfile
           platforms: windows/amd64,windows/arm64
+          push: true
+          tags: |
+            ${{ env.REPO_NAME }}:${{ github.event.inputs.version }}
+            ${{ github.event.inputs.latest && format('{0}:latest', env.REPO_NAME) }}
+
+      - name: Build and push Linux Dockerfile
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile.linux  # Specify the Linux Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ${{ env.REPO_NAME }}:${{ github.event.inputs.version }}
