@@ -4,12 +4,6 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Runs daily at midnight
   workflow_dispatch:  # Option to run manually
-    inputs:
-      force:
-        description: 'Bypass version check'
-        required: false
-        default: 'false'
-        type: boolean
 
 jobs:
   check_release:
@@ -33,21 +27,13 @@ jobs:
         run: |
           GITLAB_VERSION=$(cat gitlab_release.txt)
           DOCKERHUB_VERSIONS=$(cat dockerhub_tags.txt)
-
-          # Check if force is set to true
-          if [ "${{ github.event.inputs.force }}" == 'true' ]; then
-            echo "Force option is enabled. Proceeding with version: $GITLAB_VERSION"
+          if echo "$DOCKERHUB_VERSIONS" | grep -q "$GITLAB_VERSION"; then
+            echo "Version already exists on DockerHub: $GITLAB_VERSION"
+            echo "new_version=false" >> $GITHUB_ENV
+          else
+            echo "New version found: $GITLAB_VERSION"
             echo "new_version=true" >> $GITHUB_ENV
             echo "version=$GITLAB_VERSION" >> $GITHUB_ENV
-          else
-            if echo "$DOCKERHUB_VERSIONS" | grep -q "$GITLAB_VERSION"; then
-              echo "Version already exists on DockerHub: $GITLAB_VERSION"
-              echo "new_version=false" >> $GITHUB_ENV
-            else
-              echo "New version found: $GITLAB_VERSION"
-              echo "new_version=true" >> $GITHUB_ENV
-              echo "version=$GITLAB_VERSION" >> $GITHUB_ENV
-            fi
           fi
 
       - name: Trigger Docker Build Workflow
@@ -58,4 +44,4 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/RyuunosukeDS3/nadeko-bot-docker/actions/workflows/122799033/dispatches \
-            -d '{"ref":"v5", "inputs": {"logLevel": "run", "version": "${{ env.version }}", "latest": true}}'
+            -d '{"ref":"v5", "inputs": {"logLevel": "run", "version": "${{ env.version }}", "latest": true}}'  # set latest to true or false as needed
