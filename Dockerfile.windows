@@ -1,0 +1,19 @@
+# Base image for Windows
+FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
+
+COPY . .
+
+ARG VERSION
+ARG TARGETPLATFORM
+
+ENV VERSION=${VERSION}
+ENV TARGETPLATFORM=${TARGETPLATFORM}
+
+# Install and configure for Windows
+SHELL ["powershell", "-Command"]
+RUN ./install-prereq-win.ps1; \
+    ./install-nadeko-win.ps1; \
+    ./run-nadeko-win.ps1
+
+# Final CMD for Windows
+CMD ["powershell.exe", "-Command", "./run-nadeko-win.ps1"]
