@@ -1,5 +1,5 @@
 # Base image for Windows
-FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
+FROM mcr.microsoft.com/windows/nanoserver:2022
 
 COPY . .
 
