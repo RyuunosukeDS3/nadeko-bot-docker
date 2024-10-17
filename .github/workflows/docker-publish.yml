@@ -48,7 +48,7 @@ jobs:
 
       - name: Build and push Windows Dockerfile (amd64)
         run: |
-          docker build -t $env:REPO_NAME:${{ github.event.inputs.version }} -f ./Dockerfile.windows .
+          docker build -f ./Dockerfile.windows -t $env:REPO_NAME:${{ github.event.inputs.version }} .
           if (${{ github.event.inputs.latest }}) {
             docker tag $env:REPO_NAME:${{ github.event.inputs.version }} $env:REPO_NAME:latest
           }
@@ -86,7 +86,7 @@ jobs:
 
       - name: Build and push Windows Dockerfile (arm64)
         run: |
-          docker build -t $env:REPO_NAME:${{ github.event.inputs.version }} -f ./Dockerfile.windows .
+          docker build -f ./Dockerfile.windows -t $env:REPO_NAME:${{ github.event.inputs.version }} .
           if (${{ github.event.inputs.latest }}) {
             docker tag $env:REPO_NAME:${{ github.event.inputs.version }} $env:REPO_NAME:latest
           }
