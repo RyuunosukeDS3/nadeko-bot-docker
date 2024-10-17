@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Runs daily at midnight
   workflow_dispatch:  # Option to run manually
+    inputs:
+      force:
+        description: 'Bypass version check'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   check_release:
@@ -27,13 +33,21 @@ jobs:
         run: |
           GITLAB_VERSION=$(cat gitlab_release.txt)
           DOCKERHUB_VERSIONS=$(cat dockerhub_tags.txt)
-          if echo "$DOCKERHUB_VERSIONS" | grep -q "$GITLAB_VERSION"; then
-            echo "Version already exists on DockerHub: $GITLAB_VERSION"
-            echo "new_version=false" >> $GITHUB_ENV
-          else
-            echo "New version found: $GITLAB_VERSION"
+
+          # Check if force is set to true
+          if [ "${{ github.event.inputs.force }}" == 'true' ]; then
+            echo "Force option is enabled. Proceeding with version: $GITLAB_VERSION"
             echo "new_version=true" >> $GITHUB_ENV
             echo "version=$GITLAB_VERSION" >> $GITHUB_ENV
+          else
+            if echo "$DOCKERHUB_VERSIONS" | grep -q "$GITLAB_VERSION"; then
+              echo "Version already exists on DockerHub: $GITLAB_VERSION"
+              echo "new_version=false" >> $GITHUB_ENV
+            else
+              echo "New version found: $GITLAB_VERSION"
+              echo "new_version=true" >> $GITHUB_ENV
+              echo "version=$GITLAB_VERSION" >> $GITHUB_ENV
+            fi
           fi
 
       - name: Trigger Docker Build Workflow
