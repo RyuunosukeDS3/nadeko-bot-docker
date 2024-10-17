@@ -8,8 +8,8 @@ ENV TARGETPLATFORM=${TARGETPLATFORM}
 
 COPY . .
 
-RUN chmod u+x ./install-prereq.sh && ./install-prereq-linux.sh
-RUN chmod u+x ./install-nadeko.sh && ./install-nadeko-linux.sh
+RUN chmod u+x ./install-prereq-linux.sh && ./install-prereq-linux.sh
+RUN chmod u+x ./install-nadeko-linux.sh && ./install-nadeko-linux.sh
 RUN chmod u+x ./run-nadeko-linux.sh
 
 CMD ["/bin/bash", "-c", "./run-nadeko-linux.sh"]
