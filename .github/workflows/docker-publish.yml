@@ -43,14 +43,15 @@ jobs:
           echo $repo:${{ github.event.inputs.version }}
           echo "$repo":"${{ github.event.inputs.version }}"
           echo docker build -t "$repo":"${{ github.event.inputs.version }}" .
-          docker build -t $repo:${{ github.event.inputs.version }} .
+          docker build -t test .
           
           # Push the versioned tag
+          docker tag test "$repo":"${{ github.event.inputs.version }}"
           docker push $repo:${{ github.event.inputs.version }}
 
           # Conditionally push the 'latest' tag if specified
           if (${{ github.event.inputs.latest }}) {
-            docker tag $repo:${{ github.event.inputs.version }} $repo:latest
+            docker tag "$repo":"${{ github.event.inputs.version }}" $repo:latest
             docker push $repo:latest
           }
 
