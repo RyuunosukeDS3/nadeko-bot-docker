@@ -40,7 +40,7 @@ jobs:
           # Build the Docker image
           $repo = "${{ github.repository }}".ToLower()
           Rename-Item -Path './Dockerfile.windows' -NewName 'Dockerfile'
-          docker build -t $repo:${{ github.event.inputs.version }} -
+          docker build -t $repo:${{ github.event.inputs.version }} .
           
           # Push the versioned tag
           docker push $repo:${{ github.event.inputs.version }}
@@ -72,7 +72,7 @@ jobs:
           # Build the Docker image
           $repo = "${{ github.repository }}".ToLower()
           Rename-Item -Path './Dockerfile.windows' -NewName 'Dockerfile'
-          docker build -t $repo:${{ github.event.inputs.version }} -
+          docker build -t $repo:${{ github.event.inputs.version }} .
           
           # Push the versioned tag
           docker push $repo:${{ github.event.inputs.version }}
