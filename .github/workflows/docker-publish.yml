@@ -51,7 +51,7 @@ jobs:
         run: |
           # Build the Docker image
           Rename-Item -Path './Dockerfile.windows' -NewName 'Dockerfile'
-          docker build -t $env:REPO_NAME:${{ github.event.inputs.version }} .
+          docker build -t $env:REPO_NAME:${{ github.event.inputs.version }} -
           
           # Push the versioned tag
           docker push $env:REPO_NAME:${{ github.event.inputs.version }}
@@ -94,7 +94,7 @@ jobs:
         run: |
           # Build the Docker image
           Rename-Item -Path './Dockerfile.windows' -NewName 'Dockerfile'
-          docker build -t $env:REPO_NAME:${{ github.event.inputs.version }} .
+          docker build -t $env:REPO_NAME:${{ github.event.inputs.version }} -
           
           # Push the versioned tag
           docker push $env:REPO_NAME:${{ github.event.inputs.version }}
