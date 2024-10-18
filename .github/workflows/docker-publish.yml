@@ -12,6 +12,11 @@ on:
       version:
         description: 'Version to build and publish'
         required: true
+      latest:
+        description: 'Tag as latest?'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   docker:
@@ -27,7 +32,7 @@ jobs:
         id: repo_name
         run: echo "REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: Check reponame lowercase
+      - name: Check repo name lowercase
         run: echo ${{ env.REPO_NAME }}
 
       - name: Set up QEMU
@@ -42,12 +47,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push Linux Dockerfile
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ./Dockerfile.linux
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ${{ env.REPO_NAME }}:${{ github.event.inputs.version }}
-            ${{ env.REPO_NAME }}:latest
+            ${{ github.event.inputs.latest && format('{0}:latest', env.REPO_NAME) }}
