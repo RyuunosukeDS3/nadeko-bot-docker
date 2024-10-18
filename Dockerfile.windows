@@ -1,19 +1,33 @@
-# Base image for Windows
-FROM mcr.microsoft.com/windows/nanoserver:2022
-
-COPY . .
+# Use the Windows .NET SDK image as the base image
+FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-ltsc2022
 
 ARG VERSION
 ARG TARGETPLATFORM
 
-ENV VERSION=${VERSION}
-ENV TARGETPLATFORM=${TARGETPLATFORM}
+# Install required packages using PowerShell commands
+RUN powershell -Command \
+    Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vc_redist.x64.exe" -OutFile "C:\\vc_redist.x64.exe"; \
+    Start-Process -FilePath "C:\\vc_redist.x64.exe" -ArgumentList "/install", "/quiet", "/norestart" -NoNewWindow -Wait; \
+    Remove-Item -Force "C:\\vc_redist.x64.exe";
 
-# Install and configure for Windows
-SHELL ["powershell", "-Command"]
-RUN ./install-prereq-win.ps1; \
-    ./install-nadeko-win.ps1; \
-    ./run-nadeko-win.ps1
+RUN powershell -Command \
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force; \
+    Install-Module -Name 'PSReadLine' -Force -SkipPublisherCheck; \
+    Install-Module -Name 'Microsoft.PowerShell.Archive' -Force -SkipPublisherCheck;
 
-# Final CMD for Windows
-CMD ["powershell.exe", "-Command", "./run-nadeko-win.ps1"]
+# Download yt-dlp
+RUN Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "C:\\Program Files\\yt-dlp.exe"
+
+# Create the nadekobot directory and download NadekoBot
+RUN New-Item -ItemType Directory -Path C:\nadekobot; \
+    Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/5.1.14/5.1.14-$((TARGETPLATFORM -replace 'amd64', 'x64') -replace '/', '-')-build.zip" -OutFile "C:\\nadekobot\\nadekobot.zip"; \
+    Expand-Archive -Path "C:\\nadekobot\\nadekobot.zip" -DestinationPath "C:\\nadekobot" -Force; \
+    Remove-Item -Force "C:\\nadekobot\\nadekobot.zip";
+
+# Set the working directory
+WORKDIR C:\nadekobot
+
+# Command to run the application
+CMD ["dotnet", "NadekoBot.dll"]
