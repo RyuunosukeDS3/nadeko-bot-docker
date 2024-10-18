@@ -4,27 +4,23 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-ltsc2022
 ARG VERSION
 ARG TARGETPLATFORM
 
-# Install required packages using PowerShell commands
-RUN powershell -Command \
-    Set-ExecutionPolicy Bypass -Scope Process -Force; \
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
-    Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vc_redist.x64.exe" -OutFile "C:\\vc_redist.x64.exe"; \
-    Start-Process -FilePath "C:\\vc_redist.x64.exe" -ArgumentList "/install", "/quiet", "/norestart" -NoNewWindow -Wait; \
-    Remove-Item -Force "C:\\vc_redist.x64.exe";
-
-RUN powershell -Command \
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force; \
-    Install-Module -Name 'PSReadLine' -Force -SkipPublisherCheck; \
-    Install-Module -Name 'Microsoft.PowerShell.Archive' -Force -SkipPublisherCheck;
+# Install required packages and download yt-dlp using CMD
+RUN echo Set "TEMP=C:\TEMP" >> C:\Windows\System32\setenv.cmd && \
+    mkdir C:\TEMP && \
+    call C:\Windows\System32\setenv.cmd && \
+    call "%TEMP%\setenv.cmd" && \
+    start /wait cmd /c "curl.exe -L -o C:\vc_redist.x64.exe https://aka.ms/vs/16/release/vc_redist.x64.exe" && \
+    start /wait cmd /c "C:\vc_redist.x64.exe /install /quiet /norestart" && \
+    del /Q C:\vc_redist.x64.exe
 
 # Download yt-dlp
-RUN Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "C:\\Program Files\\yt-dlp.exe"
+RUN curl.exe -L -o "C:\Program Files\yt-dlp.exe" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
 
 # Create the nadekobot directory and download NadekoBot
-RUN New-Item -ItemType Directory -Path C:\nadekobot; \
-    Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/5.1.14/5.1.14-$((TARGETPLATFORM -replace 'amd64', 'x64') -replace '/', '-')-build.zip" -OutFile "C:\\nadekobot\\nadekobot.zip"; \
-    Expand-Archive -Path "C:\\nadekobot\\nadekobot.zip" -DestinationPath "C:\\nadekobot" -Force; \
-    Remove-Item -Force "C:\\nadekobot\\nadekobot.zip";
+RUN mkdir C:\nadekobot && \
+    curl.exe -L -o "C:\nadekobot\nadekobot.zip" "https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/5.1.14/5.1.14-%TARGETPLATFORM:x64%-build.zip" && \
+    powershell -Command "Expand-Archive -Path 'C:\nadekobot\nadekobot.zip' -DestinationPath 'C:\nadekobot' -Force" && \
+    del /Q "C:\nadekobot\nadekobot.zip"
 
 # Set the working directory
 WORKDIR C:\nadekobot
