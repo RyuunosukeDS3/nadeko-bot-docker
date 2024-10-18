@@ -40,6 +40,8 @@ jobs:
           # Build the Docker image
           $repo = "${{ github.repository }}".ToLower()
           Rename-Item -Path './Dockerfile.windows' -NewName 'Dockerfile'
+          echo $repo
+          echo docker build -t $repo:${{ github.event.inputs.version }} .
           docker build -t $repo:${{ github.event.inputs.version }} .
           
           # Push the versioned tag
