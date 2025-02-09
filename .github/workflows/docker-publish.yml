@@ -52,10 +52,9 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          version: ${{ github.event.inputs.version }}
+          build-args: |
+            VERSION=${{ github.event.inputs.version }}
           push: true
           tags: |
             ${{ env.REPO_NAME }}:${{ github.event.inputs.version }}
             ${{ github.event.inputs.latest && format('{0}:latest', env.REPO_NAME) }}
-        env:
-          VERSION: ${{ github.event.inputs.version }}
