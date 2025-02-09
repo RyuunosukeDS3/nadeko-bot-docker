@@ -12,7 +12,7 @@ RUN apt-get install dotnet-sdk-8.0 git tmux libopus0 opus-tools libopus-dev libs
 RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && chmod a+rx /usr/local/bin/yt-dlp
 
 RUN mkdir nadekobot
-RUN cd nadekobot && wget https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/$(VERSION)/$(VERSION)-$(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g')-build.tar \
-    && tar --strip-components=1 -xvf $(VERSION)-$(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g')-build.tar;
+RUN cd nadekobot && wget https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/${VERSION}/${VERSION}-$(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g')-build.tar \
+    && tar --strip-components=1 -xvf ${VERSION}-$(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g')-build.tar;
 
 CMD ["dotnet", "nadekobot/NadekoBot.dll"]
