@@ -17,4 +17,4 @@ RUN cd nadekobot && wget https://gitlab.com/api/v4/projects/9321079/packages/gen
 RUN mv /nadekobot/data /nadekobot/default-data
 
 WORKDIR /nadekobot
-CMD ["/bin/sh", "-c", "if [ ! -d /nadekobot/data ] || [ -z \"$(ls -A /nadekobot/data)\" ]; then mv -r /nadekobot/default-data /nadekobot/data; fi && exec dotnet NadekoBot.dll"]
+CMD ["/bin/sh", "-c", "cp -ru /nadekobot/default-data/. /nadekobot/data/ && exec dotnet NadekoBot.dll"]
