@@ -14,6 +14,7 @@ RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /us
 RUN mkdir nadekobot
 RUN cd nadekobot && wget https://gitlab.com/api/v4/projects/9321079/packages/generic/NadekoBot-build/$(echo ${VERSION})/$(echo ${VERSION})-$(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g')-build.tar \
     && tar --strip-components=1 -xvf $(echo ${VERSION})-$(echo ${TARGETPLATFORM} | sed 's/amd64/x64/' | sed 's/\//-/g')-build.tar;
+RUN mv /nadekobot/data /nadekobot/default-data
 
 WORKDIR /nadekobot
-CMD ["dotnet", "NadekoBot.dll"]
+CMD ["/bin/sh", "-c", "if [ ! -d /nadekobot/data ] || [ -z \"$(ls -A /nadekobot/data)\" ]; then mv -r /nadekobot/default-data /nadekobot/data; fi && exec dotnet NadekoBot.dll"]
